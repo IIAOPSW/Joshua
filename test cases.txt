@@ -1,0 +1,49 @@
+print('unopposed hold')
+adjudicate([
+    order('player_1', 'A A HOL')
+])
+print('')
+
+print('unopposed move')
+adjudicate([
+    order('player_1', 'A A MOV B')
+])
+print('')
+
+print('unopposed support to move')
+adjudicate([
+    order('player_1', 'A A MOV B'),
+    order('player_1', 'A C SUP A to B')
+])
+print('')
+
+print('unopposed support to hold')
+adjudicate([
+    order('player_1', 'A A HOL'),
+    order('player_1', 'A B SUP A HOL')
+])
+print('')
+
+print('unopposed move via convoy')
+adjudicate([
+    order('player_1', 'A A MOV C via B'),
+    order('player_1', 'B CON A MOV C')
+])
+print('')
+
+print('unopposed move via convoy chain')
+adjudicate([
+    order('player_1', 'A A MOV D via B'),
+    order('player_1', 'B CON A MOV D via C'),
+    order('player_1', 'C CON A MOV D')
+])
+print('')
+
+print('broken support to move')
+adjudicate([
+    order('player_1', 'A A MOV B'),
+    order('player_1', 'A C SUP A MOV B'),
+    order('player_2', 'A D MOV C')
+])
+print('')
+

@@ -1,0 +1,95 @@
+Diplomacy variants: 
+
+
+Variants that simplify the rules: 
+
+Simplified support cutting: 
+When a unit providing support is attacked, that support is cut no matter where the attack originates from. 
+
+Support symmetry: 
+Any move that would cancel a support order also cancels a convoy order. 
+
+A supported supporter still supports:
+When a unit recieves n supports for an order, the order is cancelled if and only if it is opposed by a unit with n or more supports. This applies equally to support, convoy, and move orders. (Alternatively, to make this variant more consistent with classic, n+1 supports are required to break a convoy or to break support when attacking from the region being supported into). 
+
+No mercy:
+There's no such thing as retreat season. Dislodged units are simply disbanded.  
+
+Build anywhere:
+There are no home centers. Whatever you take is yours. Wherever is yours you can build on. Eg if you started out as Russia but are now left with just Turkish centers, you are now Turkey. 
+
+Gray rules:
+The guiding principle of gray rules is that if all the pieces were painted gray such that you didn't know who owned which, but you could still see all the orders that were given to all the units, then it should still be possible to adjudicate the turn. The rules on self-dislodging, cutting your own supports, and convoy kidnapping are thrown out.  
+
+Coastal Convoys:
+A ship on a coastal territory may convoy an army from one coastal territory to another. 
+
+Variants that extend existing mechanics in simple ways:
+
+build 1900:
+The game begins in build season 1900. 
+
+Straitforward Convoys: 
+A ship in Denmark or Constantinople may convoy an army. 
+
+Surmountable problem:
+Switzerland can be occupied, but moving there requires one more support than it normally would. 
+
+Weak modified build season:
+During build season, a unit on a location where you can build may be changed from an army to a fleet or vice versa. 
+
+Strong modified build season:
+During build season you may disband any unit and replace it with a new unit in a location you can build. You may also replace or remove units that are already in a location where you can build. All that matters is total units = total supply centers. (Alternatively, this variant can be constructed as everyone is free to disband during retreat phase (not just dislodged units)). 
+
+Transactional build season:
+Players may give builds to other players. To accomplish this, a player may place more build orders than they can afford, and may also issue orders to fund another player. Build orders are treated as an order of preference list such that every order will execute sequentially until all funds (external and internal) are exhausted. The fund order is also treated sequentially. 
+
+The North Dakota Coast Guard:
+You may build a ship on a landlocked territory. It just can't move anywhere or provide any support. 
+
+Four Seasons total Diplomacy:
+Effectively 2 turns of Spring in a row followed by 2 turns of Fall in a row. But we name the seasons "Spring", "Summer", "Winter" and "Fall". 
+
+All gas, no brakes:
+There's no such thing as a hold order anymore. And no you can't just use an illegal order to accomplish the same thing. Orders to move/support to a non-reachable territory, or support/convoy a non-existant unit, or move via convoy when no ship is present shall result in the unit being instead ordered to move at random. 
+
+Forrests:
+A unit in a forrest territory is invisible to everyone except the player who owns it. 
+
+Variants that add new types of orders and/or units:
+
+Portage:
+Portage works exactly like a convoy except on land. Any army on a landlocked territory may portage a ship from one coastal territory to another. 
+
+Rail convoy: 
+A territory itself (not a unit on it) which is owned by a player may be ordered to "rail convoy" an army across it. When such a territory is moved into or bounced over, the rail convoy is cancelled. Rail convoy otherwise works like a sea convoy and may be part of a single land/sea convoy move. 
+
+Support for nationalist:
+If a territory is currently unoccupied and is a non-home Supply Center, a unit may provide support to the territory itself (rather than a unit in it). If the territory itself has greater or equal support than any invading force, all invaders are repelled and the territory reverts to neutral ownership.
+
+Useful idiotly: 
+In this 6 player variant without an Italian player such that the Italian moves are determined after the true players moves are revealed. Italian units will move to or hold in whichever territory they have the most support to move/hold. Call all Italian units which have a move order "employed". All Italian units which can support an employed unit does so and is now also considered "employed". If there is more than one such unit it could support, the preference is to support whichever currently has the least support, followed by alphabetical. This process is iterated until no additional units can be employed this way. Any remaining unemployed units support each other to hold in the optimal way. 
+
+Mutable maps:
+[how to build or destroy SC's]
+
+Decleration of war and peace: 
+All sets of orders begin with declerations of war or peace against other nations. When one nation declares war on another, the state of war persists until that nation has declared peace. A nations units may not dislodge, support the dislodge of, or cut the supports given by another nations units unless they are in a declared state of war. Adjacent units belonging to nations at mutual peace may swap places with each other. You can never declare war on yourself. 
+
+Submarines:
+[invisible fleets]
+
+Aircraft: 
+[can move 2 spaces, but suck at occupation]
+
+
+Variants that change the off-the-board game:
+
+Palace intrigue: 
+[general, admiral, ruler]
+
+War crimes:
+A unit may be given a "kill civilians" order. Functionally this is the same as a hold order, but it tells you a lot about the type of person you are playing with. 
+
+Bullshit currency for a bullshit metagame:
+Players with a unit in or next to Norway during Build phase may vote to award another player a Nobel Peace Prize. Additionally, players with a unit next to Switzerland during build phase may vote to issue a League of Nations Sanction against another player. Players get one vote for every qualified unit. Neither the Nobel Peace Prize nor the Resolution does anything to change the current game in any way. However, if the current game is for a ranking or is part of a tournament, and a player has more Peace Prizes than Sanctions, the difference between the number of each is added to their score (even if they were eliminated). 

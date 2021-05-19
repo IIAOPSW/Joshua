@@ -1,0 +1,57 @@
+# Read this first
+#
+# This is a blind adjudicator. It can function without even seeing the map or board state
+# (assuming all the submitted orders are legal). For blind adjudication to work, I needed to 
+# make some slight improvements to the order syntax.
+#
+# 1) There is no such thing as an implict hold order. If you don't give a unit a hold order, 
+# the adjudicator won't know it's there. It's blind! 
+#
+# 2) There is no such thing as an implicit convoy order. All convoys must use the 'via' keyword.
+# However the via keyword works differently from in the usual rules. The word after via points
+# to the ship which is providing the convoy. The full syntax for a convoy move is:
+#
+# A [territory] MOV [destination] via [sea territory]
+# F [sea territory] CON [territory] to [destination]
+#
+# In the case of a chain of convoys, the via territory refers to the first ship in the chain.
+# All subsequent ships in the chain (except the last one) must also use the via keyword. 
+# The full syntax for a convoy chain is:
+#
+# A [territory] MOV [destination] via [sea territory 1]
+# F [sea territory 1] CON [territory] to [destination] via [sea territory 2]
+# F [sea territory 2] CON [territory] to [destination]
+#
+# In the case that there is more than one convoy route, the 'or' keyword may be used after the 
+# via territory. The full syntax for a multi route convoy is:
+#
+# A [territory] MOV [destination] via [sea territory 1] or [sea territory 2] or ...
+# F [sea territory 1] CON [territory] to [destination]
+# F [sea territory 2] CON [territory] to [destination]
+# ...
+#
+# Fleets that are part of a chain may also use multi-routing with the 'via [x] or [y] or ...' 
+# syntax. The only restriction is don't make a circular convoy route. 
+#
+# 
+# Other notes: Parsing is unforgiving right now.
+# Make sure to write orders in the expected format (CAPITALIZATION AND SPACING MATTER).
+# Only one space between each keyword / territory name. 
+# The order keywords are "HOL", "MOV", "SUP", and "CON". Grammar keywords like 'via' and 'or' 
+# are lowercase. Unit type keywords are "A" and "F". 
+# Territory names can be any string of letters without spaces so long as spelling
+# and capitalization are consistent. Call it "EnG_ChAnNeL" for all I care. 
+# Multi-coast territories are not yet implemented. 
+# The exact syntax for each type of order is:
+#
+# hold:                      [A/F] [territory] HOL
+# move:                      [A/F] [territory] MOV [destination]
+# convoyed move:             A [territory] MOV [destination] via [sea territory]
+# multi-route convoyed move: A [territory] MOV [destination] via [sea territory 1] or [sea territory 2] or [sea territory 2] or...
+# support hold:              [A/F] [territory] SUP [helped territory] HOL
+# support move:              [A/F] [territory] SUP [helped territory] MOV [destination]
+# convoy:                    F [territory] CON [helped territory]
+# convoy chain:              F [territory] CON [helped territory] MOV [destination] via [sea territory]
+# multi-route convoy chain:  F [territory] CON [helped territory] MOV [destination] via [sea territory 1] or [sea territory 2] or...
+#
+# By convention I use "A", "B", "C"... as placeholder names for territories
