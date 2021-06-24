@@ -48,7 +48,7 @@ memes = ['O7', '|_7', '---', '-->', '+->', '~~>', '++',':X', '<3', ':<']
 
 def parse(ordl, player = nobody, unit_types = ['_','*','A','F'], seasons = ['Spring', 'Fall'], phases = ['Orders', 'Retreat', 'Build'], year = 1901, inner = 'self', fres=[], fict=False):
     if len(ordl) == 0: return []
-    if len(fres) == 0: fres.append((order_set(seasons[0],phases[0],year), state(seasons[0],phases[0],year)))
+    if len(fres) == 0: fres.append((order_set(str(year),'player'), state(seasons[0],phases[0],year)))
     if type(ordl) == str:
         #first do some data sanitization
         sp = ' / '
@@ -58,7 +58,8 @@ def parse(ordl, player = nobody, unit_types = ['_','*','A','F'], seasons = ['Spr
         if len(ords) > 1:
             for i in range(len(ords)):
                 if len(ords[i]) > 0 and sp not in ords[i]: player = ords[i]
-                else: parse(ords[i], player, unit_types, seasons, phases, year, inner, fres, fict)
+                else:
+                    x = parse(ords[i], player, unit_types, seasons, phases, year, inner, fres, fict)
             return fres
         newordstr = ''
         if sp == ' / ': #we are in morse mode
@@ -87,7 +88,7 @@ def parse(ordl, player = nobody, unit_types = ['_','*','A','F'], seasons = ['Spr
                 elif w in phases: p = w
                 elif True: y = int(w) #elif numeric
         if len(fres[0][0]) == 0: fres.pop()
-        fres.append((order_set(s,p,y), state(s,p,y)))
+        fres.append((order_set(str(y),'player'), state(s,p,y)))
         return fres
     #now process lines which represent individual orders
     if w == DEC:
@@ -128,96 +129,9 @@ def parse(ordl, player = nobody, unit_types = ['_','*','A','F'], seasons = ['Spr
 
 
 class rulebook:
-    #this needs to contain:
-    #the disruption rules (aka the equations of Diplomacy)
-    #the disallowed templates (the orders that are not allowed)
-    #maybe some other shit. idk. 
-
-    #disruption rules need to be applied in the following order
-    #canceled from outside destination (towards next_terr), canceled from destination (towards current terr) ,
-    #then, if canceled, the dislodged rule applies from anywhere
-    #canceled from destination only applies when destination points back (head to head case)
-    #there is more than one head-to-head case. 
-
-    # A --> B -->
-    # A <-> B
-    # A --> <-- B
-
-    #When is B canceled from the outside (A --> B)
-    #           |  A move    | A move via  | A convoy | A sup mov  | A sup hol |
-    #B move     |  never     | never       | never    | never      |  never    |
-    #B move via |  never     | never       | never    | never      |  never    |
-    #B convoy   | any* > all | any* > all  |          |            |  never    |
-    #B sup mov  | any* > 0   | any* > 0    |          | never      |  never    |
-    #B sup hol  | any* > 0   | any* > 0    |          | never      |  never    |
-    
-    #When is B canceled at the destination (A <-- B )
-    #           |  A move    | A move via  | A convoy | A sup mov  | A sup hol |
-    #B move     |            |             |  A >= B  |  A >= B    | A >= B    |
-    #B move via |            |             |          |  A >= B    | A >= B    |
-    #B convoy   |  never     |   never     |          |            |           |
-    #B sup mov  |  never     |   never     |  never   |  never     | never     |
-    #B sup hol  |  never     |   never     |  never   |  never     | never     |
-
-    #When is B canceled by directly opposed tail to head order (A <--> B)     |
-    #           |  A move   | A move via | A convoy | A sup mov  | A sup hol  |
-    #B move     |  A >= B   |  A >= B    |  A >= B  |  A >= B    |  A >= B    |
-    #B move via |  A >= B   |  A >= B    |  A >= B  |  A >= B    | any* > [B] |
-    #B convoy   |  A* > all | any* > all |  never   | any* > [B] | any* > [B] |
-    #B sup mov  |  A* > all | any* > all |  never   |   never    |   never    |
-    #B sup hol  |  A > 0    | any* > all |  never   |   never    |   never    |
-
-    #When is B canceled by a looping rule  |-->A-->B--|
-    #           |  A move    | A move via  | A convoy | A sup mov  | A sup hol |
-    #B move     |  never     |             |          |            |           |
-    #B move via |            |             |          |            |           |
-    #B convoy   |            |             |          |            |           |
-    #B sup mov  |            |             |          |            |           |
-    #B sup hol  |            |             |          |            |           |
-
-    #When is B dislodged given it is already canceled A --> B
-    #           | A move     | A move via
-    #B move     | any* > all |
-    #B move via |            |
-    #B convoy   | any* > all |
-    #B sup mov  | any* > all |
-    #B sup hol  | any* > all |
-    #B hold     | any* > all |
-
-
-    #possible rules: never, any, >=, >, >=all, >all, always 
-    #* means the opposing orders must not depend on support from (or be of) the same nation as B (AKA the self dislodge rules) 
-    #[X] means all the units in the conflict at X with the same nationality of X. 
-    
-
-    #some settings to eventually incorporate 
-    #default_rules = {
-    #   'convoy_kidnapping':False, 'implicit_convoys':True, 'friendly_passthrough':False,
-    #   'cancel_rule':'dislodged',  'as_if_from_via':True, 'con_order_breaks_sup':False,
-    #   'break_suphol_require_could_dis':False, 'break_suphol_require_no_paradox':False, 
-    #   'break_supmov_require_could_dis':True,  'break_supmov_require_no_paradox':True,
-    #   'bulid_anywhere':False, 'monotonic_builds':True, 'transactional_builds':False
-    #}
-
     def __init__(t):
-
-        t.sp = [
-            "Spring", ["order", "retreat"],
-            "Fall", ["order", "retreat", "build" ]
-        ]
-
-        t.outside_rule = {
-            MOV:'>=', CON:'>all*', SUP:'any*', HOL:'any*'
-        }
-        t.tugowar_rule = {
-            MOV:{MOV:'>=', CON:'', SUP:'none', HOL:'none'},
-            CON:{MOV:'', CON:'', SUP:'', HOL:''},
-            SUP:{MOV:'', CON:'', SUP:'', HOL:''},
-            HOL:{MOV:'any*', CON:'never', SUP:'never', HOL:'never'}
-        }
-        t.dis_rule = {MOV:'1*', CON:'N*', SUP:'N*', HOL:'N*'}
         
-        x = parse('''MATCHING_SUPPORTS UNRESOLVED 1901
+        t.x = parse('''MATCHING_SUPPORTS UNRESOLVED 1901
 helper
 * A SUP * B MOV C
 * A SUP * B MOV C
@@ -270,10 +184,9 @@ helper
 F B CON A A MOV D
 F B CON A A MOV D via F C
 F C CON A A MOV D
-
 ''', fres = [], seasons=['MATCHING_SUPPORTS', 'MATCHING_CONVOYS', 'MATCHING_VIA'], phases=['UNRESOLVED', 'CANCELED'])
 
-        t.sup_rules = (x[0][0].ords['helped'], x[0][0].ords['helper'])
+        t.sup_rules = 0#(t.x[0][0].ords['helped'], t.x[0][0].ords['helper'])
 
     def sup_min_max(t, ord_, ignore = ''):
         return 0, 1 #temp
@@ -366,11 +279,14 @@ class unit:
         t.ord = null_order
         t.conflicting = []
 
+    def __repr__(t):
+        return 'unit<%s>'%str(t)
+    
     def __str__(t):
         res = ''
         if t.dis_from != null_terr: res += '~'
         res += t.ut
-        return debugstr(res,'unit')
+        return res
 
     def __and__(t,o):
         return streq(t.ut,o.ut) #streq(t.player, o.player)
@@ -383,8 +299,7 @@ class unit:
         return ''
 
     def add_o(t, ord_, replace = False): 
-        if not streq(ord_.player,t.player) or not streq(ord_.ut.ut, t.ut):
-            return
+        if not streq(ord_.player,t.player) or not streq(ord_.ut.ut, t.ut): return
         if replace or t.ord == null_order: 
             t.ord = ord_
             return
@@ -427,28 +342,20 @@ class territory:
         t.conflicting = []
         if len(name)>1: t.add_c(name[1].strip(')'))
 
+    def __repr__(t):
+        return 'territory<%s>'%str(t)
+    
     def __str__(t):
         res = ''
-        if t.owner == 'rule':
-            res = 'in a'
-            if t.name[0] in '<[(' and t.name[-1] in ')]>': res += t.name.strip('<[]>')
-            if '*' in t.name:
-                res += 'ny '
-            if '!' in t.name: res += 'n occupied '
-            if '-' in t.name: res += 'hidden '
-            if '.' in t.name: res += 'supply center '
-            elif len(res)>2: res += 'territory'
-            else: res += t.name
-        else:
-            if t.hidden: res += '-'
-            if t.center: res += '*'
-            res += t.name
+        if t.hidden: res += '-'
+        if t.center: res += '*'
+        res += t.name
         if len(t.coasts)>0:
             res += '('
             for c in t.coasts: res += c + ','
             res = res[:-1]
             res += ')'
-        return debugstr(res, 'territory')
+        return res
 
     def __and__(t, o):
         if streq(t.name, o.name) and streq(t.terr_type, o.terr_type):
@@ -546,6 +453,9 @@ class order:
     def home(t): return str(t.terr)
 
     def facing(t): return str(t.hdest)
+
+    def __repr__(t):
+        return 'order<%s>'%str(t)
     
     def __str__(t):
         s = t.tab.get(' ', ' ')
@@ -562,7 +472,7 @@ class order:
         for v in t.via:
             res += w + v.occu()
             w = w2
-        return debugstr(res,'order')
+        return res
 
     def summary(t, pov = '*', mememode = False, morsemode = False): #not done
         if mememode: t.tab = memetable
@@ -740,17 +650,14 @@ class state:
     def get_u(t, terr, coast = '*'):
         t.get_t(terr, coast).get_u(u, coast)
 
-    def add_d(t, d):
-        pass
-
-    def get_d(t, pl):
-        pass
-
     def __len__(t): 
         return len(t.terrs)
 
+    def __repr__(t):
+        return 'state<%s>'%str(t)
+    
     def __str__(t):
-        return debugstr(t.summary(), 'state')
+        return t.summary()
 
     def summary(t, pov = '*', mememode = False, morsemode = False):
         res = ''
@@ -760,44 +667,52 @@ class state:
 
 
 class order_set:
-    def __init__(t, season, phase, year):
+    def __init__(t, name, sorton = '', delim = '\n'):
         t.ords = dict()
-        t.decs = dict()
+        t.name = name
+        t.delim = delim
+        t.sorton = sorton
         t.cnt = 0
-        t.prev_state = null_state
-        t.next_state = null_state
-        t.season, t.phase, t.year = season, phase, year
+        
+    def add_o(t, ord_):
+        k = ord_.__dict__.get(t.sorton,'')
+        if k not in t.ords: t.ords[k] = [ord_]
+        else: t.ords[k].append(ord_)
+        t.cnt+=1
 
-    def add_o(t, ord_, replace = False):
-        if ord_.player not in t.ords: t.ords[ord_.player] = []
-        if ord_.player not in t.decs: t.decs[ord_.player] = []
-        if type(ord_) == declaration: t.decs.append(ord_)
-        else: t.ords[ord_.player].append(ord_)
-        t.cnt += 1
-
-    def add_d(t, dec, replace = False):
-        pass
+    def get(t, name):
+        if name == t.name: return t
+        if name in t.ords:
+            if len(t.ords[name]) == 1: return t.ords[name][0]
+            return t.ords[name]
+        if ' ' in name:
+            name = name.split(' ')
+            x = t.get(name[0])
+            #figure this out later
+        return null_set
 
     def prep_ords(t):
-        for p in t.ords:
-            for o in t.ords[p]:
-                o.fill_relations()
+        for x in t.ords:
+            for o in t.ords[x]:
+                if type(o) == order: o.fill_relations()
+                elif type(o) == order_set: o.prep_ords()
+            
 
     def copy(t):
         pass
 
     def __len__(t): return t.cnt
 
-    def __str__(t): 
-        return debugstr(t.summary(), 'order_set')
+    def __repr__(t): return 'order_set<%s>'%str(t)
+
+    def __str__(t): return t.summary()
 
     def summary(t, pov = '*', mememode = False, morsemode = False):
-        res = t.season+' '+t.phase+' '+str(t.year)+'\n'
-        for p in t.ords:
-            res += p+':\n'
-            for d in t.decs[p]: res += d.summary(pov, mememode, morsemode)+'\n'
-            for o in t.ords[p]: res += o.summary(pov, mememode, morsemode)+'\n'
-            res += '\n'
+        res = t.name+t.delim
+        for x in t.ords:
+            res+=x+t.delim
+            for o in t.ords[x]: res += o.summary(pov, mememode, morsemode)+t.delim
+            res+=t.delim
         return res
 
 
@@ -809,7 +724,7 @@ null_dec = declaration('',NUL,'')
 null_order = order('','')
 null_unit.ord = null_order
 null_state = state('','',0)
-null_oset = order_set('','',0)
+null_oset = order_set('')
 null_state.prev_ords = null_oset
 default_rules = rulebook()
 
@@ -834,10 +749,8 @@ Spring 1901 (Order):
 Russia
 F STP(SC) - BOT
 A MOS - SEV
-
 France
 F PAR - BUR
-
 Fall 1901 (Orders)
 Russia
 F BOT - SWE
@@ -848,13 +761,12 @@ FRANCE
 A PAR TO BUR
 A BEL SUP A PAR TO BUR
 F MAR TO GOL
-
 GERMANY
 A KIE TO SWE VIA F BAL
 F BAL CON A KIE TO SWE
 A MUN TO BUR'''
 
-OS19 = parse(s2).pop()
+SO19 = parse(s2).pop()
 
 #print(' ')
 #s1901, s1902 = parse(s)
